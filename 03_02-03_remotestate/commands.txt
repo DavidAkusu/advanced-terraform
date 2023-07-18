@@ -1,7 +1,0 @@
-terraform init \
-    -backend-config="bucket=ovie-tfstate" \
-    -backend-config="key=ovie/ecommerceapp/app.state" \
-    -backend-config="region=us-east-2" \
-    -backend-config="dynamodb_table=ovie-tfstatelock" \
-    -backend-config="access_key=" \
-    -backend-config="secret_key="

@@ -4,8 +4,11 @@
 *.tfplan
 *.tfstate
 *.tfstate.backup
+*.lock.hcl
 *.lock.info
+backend.tf
 .terraform
 .DS_Store
 commands.txt
+*plan
 CREDS

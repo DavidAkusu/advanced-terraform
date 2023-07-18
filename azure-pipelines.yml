@@ -1,0 +1,42 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+variables:
+  - group: az-terraform-secrets
+
+stages:
+- stage: InstallTerraform
+  jobs:
+  - job: InstallTerraform
+    displayName: 'Install Terraform'
+    steps:
+    - script: |
+        curl -Os https://releases.hashicorp.com/terraform/$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')/terraform_$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')_linux_amd64.zip
+        unzip terraform_$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+      displayName: 'Install Terraform'
+      
+- stage: TerraformPlan
+  dependsOn: InstallTerraform
+  jobs:
+  - job: TerraformInit
+    displayName: "Initialize Terraform and Plan"
+    steps:
+    - checkout: self
+      persistCredentials: true
+    - script: |
+        terraform init \
+          -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
+          -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
+          -backend-config="key=$TF_STATE_BLOB_FILE" \
+          -backend-config="sas_token=$TF_STATE_BLOB_ACCESS_KEY"
+          -backend-config="access_key=$TF_STATE_BLOB_ACCESS_KEY"
+      
+      displayName: Terraform Init
+      env:
+        TF_STATE_BLOB_ACCOUNT_NAME:   $(state-blob-account)
+        TF_STATE_BLOB_CONTAINER_NAME: $(state-blob-container)
+        TF_STATE_BLOB_FILE:           $(state-blob-file)
+        TF_STATE_BLOB_ACCESS_KEY:      $(state-blob-access-key)

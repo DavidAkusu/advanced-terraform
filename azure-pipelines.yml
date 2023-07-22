@@ -55,4 +55,4 @@ stages:
   - job: TerraformValidate
     displayName: Validate Terraform
     steps:
-    - bash: ls -la
+    - bash: terraform validate

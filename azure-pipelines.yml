@@ -65,6 +65,11 @@ stages:
         terraform fmt && terraform validate
 
       displayName: Format and Validate
+      env:
+        TF_STATE_BLOB_ACCOUNT_NAME:   $(state-blob-account)
+        TF_STATE_BLOB_CONTAINER_NAME: $(state-blob-container)
+        TF_STATE_BLOB_FILE:           $(state-blob-file)
+        TF_STATE_BLOB_ACCESS_KEY:      $(state-blob-access-key)
     
     - bash: terraform apply linux.tfplan
       displayName: Terraform Apply

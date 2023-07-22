@@ -21,7 +21,7 @@ stages:
 - stage: TerraformPlan
   dependsOn: InstallTerraform
   jobs:
-  - job: TerraformInit
+  - job: TerraformInitandPlan
     displayName: "Initialize Terraform and Plan"
     steps:
     - checkout: self
@@ -39,3 +39,11 @@ stages:
         TF_STATE_BLOB_CONTAINER_NAME: $(state-blob-container)
         TF_STATE_BLOB_FILE:           $(state-blob-file)
         TF_STATE_BLOB_ACCESS_KEY:      $(state-blob-access-key)
+    
+    - bash: terraform plan -out linux.tfplan
+      displayName: Terraform Plan
+      env:
+        ARM_SUBSCRIPTION_ID: $(sp-subscription-id)
+        ARM_CLIENT_ID:       $(sp-client-id)
+        ARM_CLIENT_SECRET:   $(sp-client-secret)
+        ARM_TENANT_ID:       $(sp-tenant-id)

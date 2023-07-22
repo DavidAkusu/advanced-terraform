@@ -71,7 +71,7 @@ stages:
         TF_STATE_BLOB_FILE:           $(state-blob-file)
         TF_STATE_BLOB_ACCESS_KEY:      $(state-blob-access-key)
     
-    - bash: terraform apply linux.tfplan
+    - bash: terraform apply -auto-approve
       displayName: Terraform Apply
       env:
         ARM_SUBSCRIPTION_ID: $(sp-subscription-id)

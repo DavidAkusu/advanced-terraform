@@ -47,3 +47,12 @@ stages:
         ARM_CLIENT_ID:       $(sp-client-id)
         ARM_CLIENT_SECRET:   $(sp-client-secret)
         ARM_TENANT_ID:       $(sp-tenant-id)
+
+- stage: Deploy
+  dependsOn: TerraformPlan 
+  condition: succeeded('TerraformPlan')
+  jobs:
+  - job: TerraformValidate
+    displayName: Validate Terraform
+    steps:
+    - bash: ls -la
